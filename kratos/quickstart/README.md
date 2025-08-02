@@ -11,21 +11,23 @@ It uses Docker Compose to set up Ory Kratos, a self-service UI, and a MailSlurpe
 
 ## Getting Started
 
-### 1. Initialization
-
-Run the initialization command to fetch the necessary Ory Kratos configurations.
-
-```bash
-make init
-```
-
-### 2. Running the Environment
+### Running the Environment
 
 Start all services (Kratos, UI, MailSlurper) with:
 
 ```bash
 make up
 ```
+
+This project includes all the necessary files to run the lab, so you can start the services immediately without any build or setup steps.
+
+### Updating the Lab Environment (Optional)
+
+If you want to update this lab environment to the latest version from the official `ory/kratos` repository, you can use the following commands:
+
+*   `make clone`: Clones the `ory/kratos` repository anew.
+*   `make rebuild`: Re-creates `compose.yml` and related configurations based on the local `kratos` source code.
+*   `make reset`: Executes `clone` and `rebuild` sequentially to completely reset the environment to the latest version.
 
 The services will then be available at the following URLs:
 

@@ -3,8 +3,8 @@ clone:
 	rm -rf ./kratos
 	git clone https://github.com/ory/kratos.git
 
-.PHONY:build
-build:
+.PHONY:rebuild
+rebuild:
 	rm -f ./compose.yml
 	docker compose -f kratos/quickstart.yml -f kratos/quickstart-standalone.yml config --no-path-resolution > compose.yml
 
@@ -12,8 +12,8 @@ build:
 	mkdir -p ./contrib/quickstart/kratos
 	cp -r kratos/contrib/quickstart/kratos/email-password ./contrib/quickstart/kratos
 
-.PHONY:init
-init: clone build
+.PHONY:reset
+reset: clone rebuild
 
 .PHONY:up
 up:
