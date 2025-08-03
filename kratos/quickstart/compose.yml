@@ -1,6 +1,7 @@
 name: kratos
 services:
   kratos:
+    image: oryd/kratos:v1.3.1
     command:
       - serve
       - -c
@@ -10,31 +11,20 @@ services:
     depends_on:
       kratos-migrate:
         condition: service_started
-        required: true
     environment:
       DSN: sqlite:///var/lib/sqlite/db.sqlite?_fk=true
       LOG_LEVEL: trace
-    image: oryd/kratos:v1.3.1
     networks:
-      intranet: null
+      - intranet
     ports:
-      - mode: ingress
-        target: 4433
-        published: "4433"
-        protocol: tcp
-      - mode: ingress
-        target: 4434
-        published: "4434"
-        protocol: tcp
+      - "4433:4433"
+      - "4434:4434"
     restart: unless-stopped
     volumes:
-      - type: volume
-        source: kratos-sqlite
-        target: /var/lib/sqlite
-      - type: bind
-        source: ./config
-        target: /etc/config/kratos
+      - kratos-sqlite:/var/lib/sqlite
+      - ./config:/etc/config/kratos
   kratos-migrate:
+    image: oryd/kratos:v1.3.1
     command:
       - -c
       - /etc/config/kratos/kratos.yml
@@ -44,18 +34,14 @@ services:
       - --yes
     environment:
       DSN: sqlite:///var/lib/sqlite/db.sqlite?_fk=true&mode=rwc
-    image: oryd/kratos:v1.3.1
     networks:
-      intranet: null
+      - intranet
     restart: on-failure
     volumes:
-      - type: volume
-        source: kratos-sqlite
-        target: /var/lib/sqlite
-      - type: bind
-        source: ./config
-        target: /etc/config/kratos
+      - kratos-sqlite:/var/lib/sqlite
+      - ./config:/etc/config/kratos
   kratos-selfservice-ui-node:
+    image: oryd/kratos-selfservice-ui-node:v1.3.1
     environment:
       COOKIE_SECRET: changeme
       CSRF_COOKIE_NAME: ory_csrf_ui
@@ -64,28 +50,18 @@ services:
       KRATOS_PUBLIC_URL: http://kratos:4433/
       PORT: "4455"
       SECURITY_MODE: ""
-    image: oryd/kratos-selfservice-ui-node:v1.3.1
     networks:
-      intranet: null
+      - intranet
     ports:
-      - mode: ingress
-        target: 4455
-        published: "4455"
-        protocol: tcp
+      - "4455:4455"
     restart: on-failure
   mailslurper:
     image: oryd/mailslurper:latest-smtps
     networks:
-      intranet: null
+      - intranet
     ports:
-      - mode: ingress
-        target: 4436
-        published: "4436"
-        protocol: tcp
-      - mode: ingress
-        target: 4437
-        published: "4437"
-        protocol: tcp
+      - "4436:4436"
+      - "4437:4437"
 networks:
   intranet:
     name: kratos_intranet
