@@ -1,81 +1,49 @@
-# Ory Kratos Quickstart
+# GEMINI.md
 
 ## 프로젝트 개요
 
-이 프로젝트는 [Ory Kratos](https://www.ory.sh/docs/kratos)를 사용하여 사용자 인증 시스템을 빠르게 시작하기 위한 예제입니다. Docker Compose를 사용하여 Kratos, UI 예제, MailSlurper (이메일 서버)를 실행합니다.
+이 프로젝트는 [Ory Kratos 퀵스타트 가이드](https://www.ory.sh/docs/kratos/quickstart)를 직접 실습해볼 수 있도록 구성된 플레이그라운드 환경입니다. Docker Compose를 사용하여 Ory Kratos, 샘플 UI, 이메일 테스트를 위한 MailSlurper 인스턴스를 함께 실행합니다.
+실습을 위한 파일은 ory/kratos 레포지토리의 19a41ecd505e1a78dcbefb8c1f264268adfd4415 커밋 기준으로 작성되었습니다. (https://github.com/ory/kratos/tree/19a41ecd505e1a78dcbefb8c1f264268adfd4415)
+raw 폴더는 실습 파일 원본 및 실습 파일 원본 재생성을 위한 명령어로 구성해되어 있습니다.
 
-주요 기술:
+주요 기술 스택은 다음과 같습니다.
 
-*   **Ory Kratos:** 사용자 인증 및 관리 시스템
-*   **Docker Compose:** 다중 컨테이너 Docker 애플리케이션 정의 및 실행
-*   **MailSlurper:** 테스트용 SMTP 서버
+*   **Ory Kratos:** 사용자 인증, 등록, 계정 복구, 프로필 관리 등 self-service 기능을 제공하는 오픈소스 서비스입니다.
+*   **Docker Compose:** 여러 컨테이너를 정의하고 실행하기 위한 도구입니다.
+*   **SQLite:** Kratos의 데이터베이스로 사용됩니다.
+*   **MailSlurper:** Kratos가 보내는 확인 이메일 등을 테스트하기 위한 SMTP 서버 및 웹 UI입니다.
 
 ## 빌드 및 실행
 
-### 실행
+이 프로젝트는 `Makefile`을 통해 주요 작업을 간편하게 수행할 수 있도록 구성되어 있습니다.
 
-```bash
-make up
-```
+*   **모든 서비스 시작:**
+    ```bash
+    make up
+    ```
+*   **모든 서비스 중지:**
+    ```bash
+    make down
+    ```
+*   **모든 서비스 중지 및 데이터 삭제:**
+    ```bash
+    make clean
+    ```
+*   **Kratos 로그 확인:**
+    ```bash
+    make log
+    ```
 
-Docker Compose를 사용하여 모든 서비스를 시작합니다. 이 프로젝트에는 실습에 필요한 모든 파일이 포함되어 있으므로, 별도의 빌드나 설정 과정 없이 바로 실행할 수 있습니다.
+실행 후 다음 URL을 통해 각 서비스에 접근할 수 있습니다.
 
-### 실습 환경 업데이트 (선택 사항)
-
-만약 이 실습 환경을 `ory/kratos` 공식 저장소의 최신 버전으로 업데이트하고 싶다면 다음 명령어들을 사용할 수 있습니다.
-
-*   `make clone`: `ory/kratos` 저장소를 새로 복제합니다.
-*   `make rebuild`: 로컬의 `kratos` 소스 코드를 기반으로 `compose.yml`과 관련 설정을 다시 생성합니다.
-*   `make reset`: `clone`과 `rebuild`를 순차적으로 실행하여 전체 환경을 최신 상태로 초기화합니다.
-
-### 종료
-
-```bash
-make down
-```
-
-실행중인 모든 서비스를 중지합니다.
-
-### 완전 삭제
-
-```bash
-make clean
-```
-
-모든 서비스와 데이터를 삭제합니다.
+*   **Kratos Public API:** `http://127.0.0.1:4433/`
+*   **Kratos Admin API:** `http://127.0.0.1:4434/`
+*   **Self-Service UI:** `http://127.0.0.1:4455/`
+*   **MailSlurper:** `http://127.0.0.1:4436/`
 
 ## 개발 컨벤션
 
-### API 흐름 테스트
-
-다음 스크립트를 사용하여 로그인 및 회원가입 API 흐름을 테스트할 수 있습니다.
-
-*   **로그인 흐름 가져오기:**
-
-    ```bash
-    make get-signin-flow
-    ```
-
-*   **회원가입 흐름 가져오기:**
-
-    ```bash
-    make get-signup-flow
-    ```
-
-### UI 및 이메일 확인
-
-*   **테스트 UI 열기:**
-
-    ```bash
-    make open-test-ui
-    ```
-
-    브라우저에서 `http://127.0.0.1:4455/welcome` 주소로 테스트 UI를 엽니다.
-
-*   **MailSlurper 열기:**
-
-    ```bash
-    make open-mailslurper
-    ```
-
-    브라우저에서 `http://127.0.0.1:4436/` 주소로 MailSlurper를 열어 Kratos가 보낸 이메일을 확인할 수 있습니다.
+*   **설정 관리:** Kratos의 주요 설정은 `config/kratos.yml` 파일에서 관리합니다.
+*   **사용자 스키마:** 사용자의 `traits` 정보는 `config/identity.schema.json` 파일에 JSON Schema 형태로 정의됩니다.
+*   **API 상호작용:** `scripts` 디렉토리의 셸 스크립트들은 `curl`과 `jq`를 사용하여 Kratos API와 상호작용하는 예시를 보여줍니다.
+*   **작업 자동화:** `Makefile`을 사용하여 반복적인 Docker Compose 명령어 및 기타 작업들을 자동화합니다.

@@ -1,31 +1,28 @@
-# Ory Kratos 퀵스타트 플레이그라운드
+# Ory Kratos 플레이그라운드
 
-이 디렉토리는 [Ory Kratos 퀵스타트 가이드](https://www.ory.sh/docs/kratos/quickstart)를 직접 실습해볼 수 있도록 구성된 플레이그라운드 환경입니다.
+이 프로젝트는 [Ory Kratos 퀵스타트 가이드](https://www.ory.sh/docs/kratos/quickstart)를 직접 실습해볼 수 있도록 구성된 Docker 기반의 플레이그라운드 환경입니다.
 
-Docker Compose를 사용하여 Ory Kratos, 셀프 서비스 UI, 그리고 이메일 테스트를 위한 MailSlurper 인스턴스를 설정합니다.
+Docker Compose를 사용하여 Ory Kratos, 샘플 UI, 이메일 테스트를 위한 MailSlurper 인스턴스를 함께 실행합니다. 실습을 위한 파일은 `ory/kratos` 레포지토리의 `19a41ecd505e1a78dcbefb8c1f264268adfd4415` 커밋 기준으로 작성되었습니다.
 
 ## 사전 준비
 
 *   [Docker](https://www.docker.com/get-started)
 *   [Make](https://www.gnu.org/software/make/)
 
+## 주요 기술 스택
+
+*   **Ory Kratos:** 사용자 인증, 등록, 계정 복구, 프로필 관리 등 self-service 기능을 제공하는 오픈소스 서비스입니다.
+*   **Docker Compose:** 여러 컨테이너를 정의하고 실행하기 위한 도구입니다.
+*   **SQLite:** Kratos의 데이터베이스로 사용됩니다.
+*   **MailSlurper:** Kratos가 보내는 확인 이메일 등을 테스트하기 위한 SMTP 서버 및 웹 UI입니다.
+
 ## 시작하기
 
-### 환경 실행
+모든 서비스를 시작하려면 다음 명령어를 실행하세요.
 
 ```bash
 make up
 ```
-
-이 프로젝트에는 실습에 필요한 모든 파일이 포함되어 있으므로, 별도의 빌드나 설정 과정 없이 바로 서비스를 시작할 수 있습니다.
-
-### 실습 환경 업데이트 (선택 사항)
-
-만약 이 실습 환경을 `ory/kratos` 공식 저장소의 최신 버전으로 업데이트하고 싶다면 다음 명령어들을 사용할 수 있습니다.
-
-*   `make clone`: `ory/kratos` 저장소를 새로 복제합니다.
-*   `make rebuild`: 로컬의 `kratos` 소스 코드를 기반으로 `compose.yml`과 관련 설정을 다시 생성합니다.
-*   `make reset`: `clone`과 `rebuild`를 순차적으로 실행하여 전체 환경을 최신 상태로 초기화합니다.
 
 서비스는 다음 URL에서 사용할 수 있습니다.
 
@@ -34,22 +31,28 @@ make up
 *   **셀프 서비스 UI:** `http://127.0.0.1:4455/`
 *   **MailSlurper:** `http://127.0.0.1:4436/`
 
+## 디렉토리 구조
+
+*   `config/`: Kratos의 주요 설정(`kratos.yml`) 및 사용자 `traits` 정보 스키마(`identity.schema.json`)가 위치합니다.
+*   `scripts/`: `curl`과 `jq`를 사용하여 Kratos API와 상호작용하는 예시 셸 스크립트가 위치합니다.
+*   `raw/`: 실습 파일 원본 및 재생성 관련 파일들이 위치합니다.
+
 ## 사용 가능한 명령어
 
-이 플레이그라운드는 `Makefile`을 통해 편리한 작업 실행을 지원합니다.
+`Makefile`을 통해 다음 작업들을 편리하게 실행할 수 있습니다.
 
 *   `make up`: 모든 서비스를 백그라운드에서 시작합니다.
 *   `make down`: 모든 서비스를 중지합니다.
-*   `make clean`: 모든 서비스와 데이터 볼륨을 제거합니다.
+*   `make clean`: 모든 서비스와 데이터를 제거합니다.
 *   `make log`: Kratos 컨테이너의 로그를 확인합니다.
-*   `make open-test-ui`: 기본 브라우저에서 셀프 서비스 UI를 엽니다.
-*   `make open-mailslurper`: Kratos가 보낸 이메일을 확인할 수 있는 MailSlurper UI를 엽니다.
-*   `make get-signin-flow`: Kratos API에서 현재 로그인 흐름을 가져옵니다.
-*   `make get-signup-flow`: Kratos API에서 현재 회원가입 흐름을 가져옵니다.
+*   `make open-test-ui`: 브라우저에서 샘플 UI를 엽니다.
+*   `make open-mailslurper`: MailSlurper UI를 엽니다.
+*   `make get-signin-flow`: Kratos 로그인 흐름을 조회합니다.
+*   `make get-signup-flow`: Kratos 회원가입 흐름을 조회합니다.
 
 ## 정리하기
 
-모든 서비스를 중지하고 컨테이너와 관련 데이터를 제거하려면 다음을 실행하십시오.
+모든 서비스를 중지하고 관련 데이터를 모두 제거하려면 다음을 실행하십시오.
 
 ```bash
 make clean
